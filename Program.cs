@@ -15,9 +15,6 @@ namespace Cars_and_Manufacturers
     {
         public static void Main(string[] args)
         {
-            var d = new DataReaderService();
-            List<Car> cars = d.GetAllCars().Result;
-            List<ManuFacturer> m = d.GetAllManufacturers().Result;
             CreateHostBuilder(args).Build().Run();
         }
 

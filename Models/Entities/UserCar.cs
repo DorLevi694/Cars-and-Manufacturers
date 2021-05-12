@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 namespace Cars_and_Manufacturers.Models.Entities
 {
     public record UserCar(
-        string UserName,
+        string Username,
         Guid CarId
     );
 }
