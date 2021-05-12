@@ -7,7 +7,7 @@ namespace Cars_and_Manufacturers.Models.Entities
 {
 
     public record Car(
-        Guid id,
+        Guid Id,
         int ModelYear,
         string Divisiot, //make
         string Carline, //model

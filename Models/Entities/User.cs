@@ -5,7 +5,10 @@ using System.Threading.Tasks;
 
 namespace Cars_and_Manufacturers.Models.Entities
 {
-    public class User
-    {
-    }
+    public record User(
+        string UserName,
+        string FirstName,
+        string LastName
+    );
+
 }
