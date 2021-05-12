@@ -1,3 +1,5 @@
+using Cars_and_Manufacturers.Models.Entities;
+using Cars_and_Manufacturers.Services;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
@@ -13,6 +15,9 @@ namespace Cars_and_Manufacturers
     {
         public static void Main(string[] args)
         {
+            var d = new DataReaderService();
+            List<Car> cars = d.GetAllCars().Result;
+            List<ManuFacturer> m = d.GetAllManufacturers().Result;
             CreateHostBuilder(args).Build().Run();
         }
 
