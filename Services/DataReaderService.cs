@@ -26,7 +26,7 @@ namespace Cars_and_Manufacturers.Services
             var cols = ToColumns(source);
 
             return new Car(
-                id: Guid.NewGuid(),
+                Id: Guid.NewGuid(),
                 ModelYear: int.Parse(cols[0]),
                 Divisiot: cols[1],
                 Carline: cols[2],
