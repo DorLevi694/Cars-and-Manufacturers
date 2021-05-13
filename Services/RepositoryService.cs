@@ -14,7 +14,7 @@ namespace Cars_and_Manufacturers.Services
 
         //init
         public Dictionary<string, User> _users = new();
-        public List<UserCar> _usersCars = new();
+        public HashSet<UserCar> _usersCars = new();
 
         public RepositoryService(IDataReaderService dataReaderService)
         {
@@ -23,7 +23,7 @@ namespace Cars_and_Manufacturers.Services
 
 
         // Operations for Car
-        public async Task<List<Car>> GetAllCars()
+        public async Task<IEnumerable<Car>> GetAllCars()
         {
             await CheckForCarsExist();
             return _cars.Values.ToList();
@@ -36,7 +36,7 @@ namespace Cars_and_Manufacturers.Services
 
 
         // Operations for ManuFacturer
-        public async Task<List<ManuFacturer>> GetAllManuFaturers()
+        public async Task<IEnumerable<ManuFacturer>> GetAllManuFaturers()
         {
             await CheckForManufacturersExist();
             return _manufacturers.Values.ToList();
@@ -53,6 +53,7 @@ namespace Cars_and_Manufacturers.Services
         public Task<List<User>> GetAllUsers()
         {
             return Task.FromResult(_users.Values.ToList());
+
         }
         public Task<User> GetUserByUsername(string username)
         {
@@ -61,7 +62,7 @@ namespace Cars_and_Manufacturers.Services
         public Task<User> AddUser(User user)
         {
             if (_users.ContainsKey(user.UserName))
-                throw new Exception("The username: '" + user.UserName + "' is already exists.");
+                throw new ArgumentException("The username: '" + user.UserName + "' is already exists.");
 
             _users.Add(user.UserName, user);
             return Task.FromResult(_users[user.UserName]);
@@ -69,7 +70,7 @@ namespace Cars_and_Manufacturers.Services
         public Task<User> ModifyUser(User user)
         {
             if (!_users.ContainsKey(user.UserName))
-                throw new Exception(user.UserName + " isn't exist.");
+                throw new ArgumentException("The username: '" + user.UserName + "' isn't exists.");
 
             _users[user.UserName] = user;
             return Task.FromResult(_users[user.UserName]);
@@ -77,12 +78,10 @@ namespace Cars_and_Manufacturers.Services
         public Task DeleteUser(string username)
         {
             if (!_users.ContainsKey(username))
-                throw new Exception(username + " isn't exist.");
+                throw new ArgumentException("The username: '" + username + "' isn't exists.");
 
-            // remove user from all is cars
-            for (int i = _usersCars.Count - 1; i >= 0; i--)
-                if (_usersCars[i].Username == username)
-                    _usersCars.RemoveAt(i);
+            //better way to delete 
+            _usersCars.RemoveWhere(item => item.Username == username);
 
             _users.Remove(username);
             return Task.CompletedTask;
@@ -91,19 +90,23 @@ namespace Cars_and_Manufacturers.Services
 
 
         // CRUD operations for UserCar 
-        public Task<List<UserCar>> GetAllUsersCars()
+        public Task<List<UserCar>> GetAllUserCars()
         {
             return Task.FromResult(_usersCars.ToList());
         }
-        public Task<List<UserCar>> GetAllCarsOfUser(string userName)
+        public async Task<IEnumerable<Car>> GetAllCarsOfUser(string userName)
         {
-            var retVal = _usersCars.Where(cur => cur.Username == userName).ToList();
-            return Task.FromResult(retVal);
+            await CheckForCarsExist();
+
+            return _usersCars.Where(cur => cur.Username == userName)
+                             .Select(userCar => _cars[userCar.CarId]);
+
+
         }
-        public Task<List<UserCar>> GetAllUsersOfCar(Guid id)
+        public async Task<IEnumerable<UserCar>> GetAllUsersOfCar(Guid id)
         {
-            var retVal = _usersCars.Where(cur => cur.CarId == id).ToList();
-            return Task.FromResult(retVal);
+            await CheckForCarsExist();
+            return _usersCars.Where(cur => cur.CarId == id);
         }
         public Task<UserCar> AddUserCar(UserCar userCar)
         {
@@ -112,12 +115,19 @@ namespace Cars_and_Manufacturers.Services
 
             _users.GetValueOrDefault(userCar.Username);
 
-            _usersCars.Add(userCar);
 
+            if (_usersCars.Contains(userCar))
+                throw new ArgumentException($"This item (" + userCar.Username + ',' + userCar.CarId + ")already exiset");
+
+
+            _usersCars.Add(userCar);
             return Task.FromResult(userCar);
         }
         public Task RemoveUserCar(UserCar userCar)
         {
+            if (!_usersCars.Contains(userCar))
+                throw new ArgumentException("You try to delete item that isn't exists.");
+
             _usersCars.Remove(userCar);
             return Task.CompletedTask;
 
