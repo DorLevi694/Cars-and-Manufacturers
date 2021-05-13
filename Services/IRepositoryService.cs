@@ -12,7 +12,7 @@ namespace Cars_and_Manufacturers.Services
         Task DeleteUser(string username);
         Task<IEnumerable<Car>> GetAllCars();
         Task<IEnumerable<Car>> GetAllCarsOfUser(string userName);
-        Task<IEnumerable<ManuFacturer>> GetAllManuFaturers();
+        Task<IEnumerable<ManuFacturer>> GetAllManuFacturers();
         Task<List<User>> GetAllUsers();
         Task<List<UserCar>> GetAllUserCars();
         Task<IEnumerable<UserCar>> GetAllUsersOfCar(Guid id);

@@ -1,3 +1,4 @@
+using Cars_and_Manufacturers.Services;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
@@ -24,8 +25,10 @@ namespace Cars_and_Manufacturers
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-
             services.AddControllers();
+
+            services.AddSingleton<IRepositoryService, RepositoryService>();
+            services.AddSingleton<IDataReaderService, DataReaderService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
