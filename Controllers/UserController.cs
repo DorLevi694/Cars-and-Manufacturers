@@ -39,8 +39,8 @@ namespace Cars_and_Manufacturers.Controllers
             }
             catch
             {
-                return NotFound(nameof(GetUserByUsername) + ":\n\tThe username: "
-                                + username + ", not exist.");
+                return NotFound($"{nameof(GetUserByUsername)}:\n\tThe "
+                                + $"username: {username}, not exist.");
             }
         }
 
@@ -55,7 +55,7 @@ namespace Cars_and_Manufacturers.Controllers
             }
             catch (ArgumentException e)
             {
-                return BadRequest(nameof(AddNewUser) + ":\n\t"+ e.Message);
+                return BadRequest($"{nameof(AddNewUser)}:\n\t{e.Message}");
             }
         }
 
