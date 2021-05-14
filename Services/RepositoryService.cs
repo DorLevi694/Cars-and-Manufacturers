@@ -90,15 +90,17 @@ namespace Cars_and_Manufacturers.Services
 
 
         // CRUD operations for UserCar 
-        public Task<List<UserCar>> GetAllUserCars()
+        public Task<List<UserCar>> GetAllUsersCars()
         {
             return Task.FromResult(_usersCars.ToList());
         }
-        public async Task<IEnumerable<Car>> GetAllCarsOfUser(string userName)
+        public async Task<IEnumerable<Car>> GetAllCarsOfUser(string username)
         {
             await CheckForCarsExist();
+            if (!_users.ContainsKey(username))
+                    throw new ArgumentException($"The user: {username}, isn't exist.");
 
-            return _usersCars.Where(cur => cur.Username == userName)
+            return _usersCars.Where(cur => cur.Username == username)
                              .Select(userCar => _cars[userCar.CarId]);
 
 
@@ -106,34 +108,43 @@ namespace Cars_and_Manufacturers.Services
         public async Task<IEnumerable<UserCar>> GetAllUsersOfCar(Guid id)
         {
             await CheckForCarsExist();
+            if (!_cars.ContainsKey(id))
+                throw new ArgumentException($"The carId: {id}, isn't exist.");
+
             return _usersCars.Where(cur => cur.CarId == id);
         }
-        public Task<UserCar> AddUserCar(UserCar userCar)
+        public async Task<UserCar> AddUserCar(UserCar userCar)
         {
+            await CheckForCarsExist();
 
-            _cars.GetValueOrDefault(userCar.CarId);
-
-            _users.GetValueOrDefault(userCar.Username);
-
-
+            if (userCar.CarId == Guid.Empty)
+                throw new ArgumentException("Wrong CarId Format - should be 'Guid' type");
+            if (!_cars.ContainsKey(userCar.CarId))
+                throw new ArgumentException($"The car: {userCar.CarId}, isn't exist.");
+            if (!_users.ContainsKey(userCar.Username))
+                throw new ArgumentException($"The user: {userCar.Username}, isn't exist.");
             if (_usersCars.Contains(userCar))
-                throw new ArgumentException($"This item (" + userCar.Username + ',' + userCar.CarId + ")already exiset");
-
+                throw new ArgumentException($"The item UserCar:({userCar.Username},{userCar.CarId}) already exist");
 
             _usersCars.Add(userCar);
-            return Task.FromResult(userCar);
+            return userCar;
         }
-        public Task RemoveUserCar(UserCar userCar)
+        public async Task RemoveUserCar(UserCar userCar)
         {
+            await CheckForCarsExist();
+
+            if (!_cars.ContainsKey(userCar.CarId))
+                throw new ArgumentException($"The car: {userCar.CarId}, isn't exist.");
+            
+            if (!_users.ContainsKey(userCar.Username))
+                throw new ArgumentException($"The user: {userCar.Username}, isn't exist.");
+            
             if (!_usersCars.Contains(userCar))
-                throw new ArgumentException("You try to delete item that isn't exists.");
-
+                throw new ArgumentException($"The item ({userCar.Username},{userCar.CarId}"
+                                          + $") isn't exist.");
+            
             _usersCars.Remove(userCar);
-            return Task.CompletedTask;
-
         }
-
-
 
 
         //take data for the first time the service need

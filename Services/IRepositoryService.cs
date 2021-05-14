@@ -14,7 +14,7 @@ namespace Cars_and_Manufacturers.Services
         Task<IEnumerable<Car>> GetAllCarsOfUser(string userName);
         Task<IEnumerable<ManuFacturer>> GetAllManuFacturers();
         Task<List<User>> GetAllUsers();
-        Task<List<UserCar>> GetAllUserCars();
+        Task<List<UserCar>> GetAllUsersCars();
         Task<IEnumerable<UserCar>> GetAllUsersOfCar(Guid id);
         Task<Car> GetCarById(Guid id);
         Task<ManuFacturer> GetManuFacturerByName(string name);

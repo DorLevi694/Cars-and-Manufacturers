@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace Cars_and_Manufacturers.Controllers
 {
-    [Route("api/manufacturer")]
+    [Route("api/manufacturers")]
     [ApiController]
     public class ManuFacturerController : ControllerBase
     {
@@ -37,7 +37,8 @@ namespace Cars_and_Manufacturers.Controllers
             }
             catch
             {
-                return NotFound(nameof(GetManufacturerByName)+ ":  The manufacturer: " +name+", not found.");
+                return NotFound($"{nameof(GetManufacturerByName)}" +
+                    $"\n\t:The manufacturer: {name}, not found.");
 
             }
 

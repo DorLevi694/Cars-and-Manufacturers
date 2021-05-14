@@ -32,11 +32,12 @@ namespace Cars_and_Manufacturers.Controllers
         {
             try
             {
-                return await _repositoryService.GetCarById(carId);
+                var ret = await _repositoryService.GetCarById(carId);
+                return Ok(ret);
             }
             catch
             {
-                return NotFound(nameof(GetCarById)+ ":\tThe carId: " + carId + " not found.");
+                return NotFound($"{nameof(GetCarById)}:\n\tThe carId: {carId}, not found.");
             }
         }
 
