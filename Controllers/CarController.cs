@@ -21,15 +21,15 @@ namespace Cars_and_Manufacturers.Controllers
             _repositoryService = repositoryService;
         }
 
-        [HttpGet("", Name=nameof(GetAllCars))]
-        public async Task<ActionResult<List<Car>>> GetAllCars([FromServices] ICurrentUserService currentUserService)
+        [HttpGet("", Name = nameof(GetAllCars))]
+        public async Task<ActionResult<List<Car>>> GetAllCars([FromQuery] string mfg, [FromServices] ICurrentUserService currentUserService)
         {
+            IEnumerable<Car> res = Enumerable.Empty<Car>();
             if (currentUserService.DataIsUpdate)  //looking for cars of specipic user 
             {
                 try
                 {
-                    var res1 = await currentUserService.getAllCarsOfCurrentUserAsync();
-                    return Ok(res1.ToList());
+                    res = await currentUserService.getAllCarsOfCurrentUserAsync();
                 }
                 catch
                 {
@@ -37,8 +37,15 @@ namespace Cars_and_Manufacturers.Controllers
                     return NotFound($"{nameof(GetAllCars)}:\n\tThe username: {username}, not found.");
                 }
             }
-            
-            var res = await _repositoryService.GetAllCars();
+
+            else 
+            { 
+                res = await _repositoryService.GetAllCars(); 
+            }
+
+            if (!string.IsNullOrEmpty(mfg))
+                res = res.Where(car => car.Divisiot.ToLower() == mfg);
+
             return Ok(res.ToList());
         }
 

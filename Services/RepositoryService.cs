@@ -35,6 +35,8 @@ namespace Cars_and_Manufacturers.Services
         }
 
 
+
+
         // Operations for ManuFacturer
         public async Task<IEnumerable<ManuFacturer>> GetAllManuFacturers()
         {
