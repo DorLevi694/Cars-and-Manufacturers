@@ -1,3 +1,4 @@
+using Cars_and_Manufacturers.Middlewares;
 using Cars_and_Manufacturers.Services;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -27,6 +28,7 @@ namespace Cars_and_Manufacturers
         {
             services.AddControllers();
 
+            services.AddScoped<ICurrentUserService, CurrentUserService>();
             services.AddSingleton<IRepositoryService, RepositoryService>();
             services.AddSingleton<IDataReaderService, DataReaderService>();
         }
@@ -40,7 +42,7 @@ namespace Cars_and_Manufacturers
             }
 
             app.UseRouting();
-
+            app.UseUserMiddleware();
             app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>
