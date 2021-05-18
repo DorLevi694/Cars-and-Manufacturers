@@ -21,13 +21,28 @@ namespace Cars_and_Manufacturers.Controllers
             _repositoryService = repositoryService;
         }
 
-        public async Task<ActionResult<List<Car>>> GetAllCars()
+        [HttpGet("", Name=nameof(GetAllCars))]
+        public async Task<ActionResult<List<Car>>> GetAllCars([FromServices] ICurrentUserService currentUserService)
         {
+            if (currentUserService.DataIsUpdate)  //looking for cars of specipic user 
+            {
+                try
+                {
+                    var res1 = await currentUserService.getAllCarsOfCurrentUserAsync();
+                    return Ok(res1.ToList());
+                }
+                catch
+                {
+                    var username = (await currentUserService.getCurrentUserName());
+                    return NotFound($"{nameof(GetAllCars)}:\n\tThe username: {username}, not found.");
+                }
+            }
+            
             var res = await _repositoryService.GetAllCars();
             return Ok(res.ToList());
         }
 
-        [HttpGet("{carId}",Name =nameof(GetCarById))]
+        [HttpGet("{carId}", Name = nameof(GetCarById))]
         public async Task<ActionResult<Car>> GetCarById(Guid carId)
         {
             try
